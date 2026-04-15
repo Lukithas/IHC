@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Profissional - Impacto das Bets no Endividamento</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Identidade CEUB + Semântica Financeira */
+            --primary-purple: #3b1054;
+            --accent-magenta: #a7197f;
+            --success-green: #2e7d32;
+            --warning-gold: #fbc02d;
+            --bg-gray: #f8f9fa;
+            --card-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            --text-main: #2d3436;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
+            background-color: var(--bg-gray); 
+            color: var(--text-main); 
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Profissional */
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .logo-container {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .logo-ceub {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Main Content Area */
+        .main-container {
+            flex: 1;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header h1 {
+            color: var(--primary-purple);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #636e72;
+            font-size: 1rem;
+        }
+
+        /* Grid de Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-magenta);
+        }
+
+        /* Formulários e Inputs */
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        label { 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            color: var(--primary-purple); 
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1.5px solid #dfe6e9;
+            border-radius: 6px;
+            background: #fdfdfd;
+            font-size: 0.95rem;
+        }
+
+        /* Estilização para o agrupamento de opções no select */
+        optgroup {
+            font-weight: bold;
+            color: var(--primary-purple);
+            font-style: normal;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent-magenta);
+            box-shadow: 0 0 0 3px rgba(167, 25, 127, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--success-green);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover { background: #1b5e20; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* Estilização dos Rodapés */
+        .footer-credits {
+            margin-top: auto;
+            text-align: center;
+            padding: 1rem;
+            color: #636e72;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .footer-institutional {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--primary-purple);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-versao-estendida.png" 
+                 alt="Logotipo oficial do CEUB" 
+                 class="logo-ceub">
+        </div>
+
+        <nav aria-label="Filtros de pesquisa">
+            <form class="filter-group">
+                <div>
+                    <label for="periodo">Período de Análise</label>
+                    <select id="periodo">
+                        <option>1º Semestre de 2026</option>
+                        <option>2º Semestre de 2025</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="regiao">Localidade</label>
+                    <select id="regiao">
+                        <option value="br">Brasil (Visão Geral)</option>
+                        
+                        <optgroup label="Centro-Oeste">
+                            <option value="df" selected>Distrito Federal (DF)</option>
+                            <option value="go">Goiás (GO)</option>
+                            <option value="mt">Mato Grosso (MT)</option>
+                        </optgroup>
+                        
+                        <optgroup label="Sudeste">
+                            <option value="sp">São Paulo (SP)</option>
+                            <option value="rj">Rio de Janeiro (RJ)</option>
+                            <option value="mg">Minas Gerais (MG)</option>
+                            <option value="es">Espírito Santo (ES)</option>
+                        </optgroup>
+                        
+                        <optgroup label="Sul">
+                            <option value="pr">Paraná (PR)</option>
+                            <option value="rs">Rio Grande do Sul (RS)</option>
+                            <option value="sc">Santa Catarina (SC)</option>
+                        </optgroup>
+                        
+                        <optgroup label="Nordeste">
+                            <option value="ba">Bahia (BA)</option>
+                            <option value="pe">Pernambuco (PE)</option>
+                            <option value="ce">Ceará (CE)</option>
+                            <option value="ma">Maranhão (MA)</option>
+                            <option value="pb">Paraíba (PB)</option>
+                        </optgroup>
+
+                        <optgroup label="Norte">
+                            <option value="am">Amazonas (AM)</option>
+                            <option value="pa">Pará (PA)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-primary">Atualizar Dashboard</button>
+            </form>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header>
+            <h1>Inadimplência Familiar x Bets: O impacto das Bets</h1>
+            <p class="subtitle">Análise consolidada de dados para o Projeto Integrador I</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Orçamento Familiar vs. Apostas</h2>
+                </div>
+                <canvas id="lineChart" role="img" aria-label="Gráfico comparativo de orçamento doméstico vs apostas."></canvas>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Distribuição por Faixa Etária (%)</h2>
+                </div>
+                <canvas id="pyramidChart" role="img" aria-label="Pirâmide etária de apostadores."></canvas>
+            </section>
+        </div>
+
+        <footer class="footer-credits">
+            Desenvolvido por: Guilherme Augusto, Gustavo Albuquerque, Lucas Bretas e Mateus Onival
+        </footer>
+
+        <footer class="footer-institutional">
+            © Projeto Integrador I - CEUB
+        </footer>
+    </main>
+
+    <script>
+        const ctxLine = document.getElementById('lineChart');
+        const ctxPyr = document.getElementById('pyramidChart');
+
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
+        Chart.defaults.color = '#636e72';
+
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Gasto Médio em Apostas (R$)',
+                    data: [150, 280, 560, 890, 1200, 1550],
+                    borderColor: '#a7197f',
+                    backgroundColor: 'rgba(167, 25, 127, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Reserva para Aluguel/Alimentação (R$)',
+                    data: [2500, 2400, 2100, 1800, 1500, 1100],
+                    borderColor: '#2e7d32',
+                    borderDash: [5, 5],
+                    fill: false
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        new Chart(ctxPyr, {
+            type: 'bar',
+            data: {
+                labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+                datasets: [{
+                    label: 'Masculino',
+                    data: [45, 38, 25, 15, 8],
+                    backgroundColor: '#3b1054'
+                }, {
+                    label: 'Feminino',
+                    data: [-20, -18, -12, -8, -5],
+                    backgroundColor: '#a7197f'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: { 
+                        stacked: true, 
+                        ticks: { callback: (v) => Math.abs(v) + '%' } 
+                    },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: { label: (c) => c.dataset.label + ': ' + Math.abs(c.raw) + '%' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
