@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Requisitos para Dashboards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo base */
+        body {
+            /* Fundo da página alterado para um tom beeeeem claro de rosa/cinza. 
+               Isso é o que faz os cartões brancos e suas bordas aparecerem! */
+            background-color: #fcf0f8; 
+            color: #202124;
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+
+        .cabecalho-logo {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .cabecalho-logo img {
+            max-height: 60px;
+            width: auto;
+        }
+
+        /* Cartões brancos que agora ganham destaque no fundo colorido */
+        .cartao {
+            background-color: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.1), 0 2px 6px 2px rgba(60,64,67,0.05);
+            position: relative; /* Necessário para a borda lateral de foco */
+            transition: box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        /* EFEITO GOOGLE FORMS: Borda lateral quando o usuário clica dentro do cartão */
+        .cartao:focus-within {
+            box-shadow: 0 2px 4px 0 rgba(60,64,67,0.1), 0 6px 10px 4px rgba(60,64,67,0.05);
+        }
+
+        .cartao:focus-within::before {
+            content: '';
+            position: absolute;
+            top: -1px; /* Compensa a borda de 1px */
+            left: -1px;
+            bottom: -1px;
+            width: 6px;
+            background-color: #bf0087; /* Cor do tema */
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        /* Cabeçalho do Formulário (Título) */
+        .cartao-cabecalho {
+            border-top: 8px solid #bf0087;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        /* Ajuste para não sobrepor a borda superior do cabeçalho com a borda de foco */
+        .cartao-cabecalho:focus-within::before {
+            top: 7px;
+            border-top-left-radius: 0;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 400;
+            margin: 0 0 12px 0;
+            color: #bf0087;
+        }
+
+        p.descricao {
+            font-size: 1rem;
+            margin: 0;
+            color: #202124;
+        }
+
+        /* Campos do Formulário */
+        .grupo-campo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        legend {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 16px;
+            color: #202124;
+        }
+
+        /* Inputs */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 1px solid #dadce0;
+            background-color: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #202124;
+            resize: vertical;
+            transition: border-bottom-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-bottom: 2px solid #bf0087;
+            margin-bottom: -1px;
+        }
+
+        ::placeholder {
+            color: #70757a;
+            opacity: 1;
+        }
+
+        /* Botão de Envio */
+        .area-botao {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 12px;
+            margin-bottom: 40px;
+        }
+
+        button[type="submit"] {
+            background-color: #bf0087;
+            color: #ffffff;
+            padding: 10px 24px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        button[type="submit"]:hover,
+        button[type="submit"]:focus {
+            background-color: #99006c;
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+            outline: none;
+        }
+
+        /* Rodapé */
+        footer {
+            text-align: center;
+            padding: 24px 0;
+            font-size: 0.875rem;
+            color: #202124;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #202124;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        footer a:hover,
+        footer a:focus {
+            text-decoration: underline;
+            outline: 2px solid #bf0087;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="cabecalho-logo">
+            <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-versao-estendida.png" alt="Logotipo do Centro Universitário de Brasília - CEUB">
+        </header>
+
+        <form action="#" method="POST">
+            <fieldset>
+                <legend>Pesquisa de Requisitos para Dashboards</legend>
+
+                <div class="cartao cartao-cabecalho" tabindex="-1">
+                    <h1>Construção de Dashboards</h1>
+                    <p class="descricao">Ajude-nos a definir quais informações são mais relevantes para nossa análise de dados sobre plataformas de apostas e o impacto na economia familiar.</p>
+                </div>
+
+                <div class="cartao">
+                    <div class="grupo-campo">
+                        <label for="nome_usuario">Qual é o seu nome?</label>
+                        <input type="text" id="nome_usuario" name="nome_usuario" required aria-required="true" placeholder="Sua resposta">
+                    </div>
+                </div>
+
+                <div class="cartao">
+                    <div class="grupo-campo">
+                        <label for="sugestao_dashboard">O que você gostaria de ver nos dashboards?</label>
+                        <textarea id="sugestao_dashboard" name="sugestao_dashboard" rows="1" required aria-required="true" placeholder="Sua resposta"></textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="area-botao">
+                <button type="submit">Enviar</button>
+            </div>
+            
+        </form>
+    </div>
+
+    <footer>
+        Desenvolvido por <a href="https://github.com/Lukithas" target="_blank" rel="noopener noreferrer" aria-label="Perfil do GitHub de Lucas Bretas (abre em nova aba)">Lucas Bretas</a>
+    </footer>
+
+</body>
+</html>
