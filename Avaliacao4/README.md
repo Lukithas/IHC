@@ -3,7 +3,7 @@
 ## Identificação do Estudante
 
 - **Nome:** Lucas Bretas Prata de Pinho Tavares
-- **Matrícula:** [Insira sua matrícula]
+- **Matrícula:** 22400039
 - **Curso:** Ciência da Computação
 - **Polo:** CEUB / Brasília-DF
 - **Data de Entrega:** 17/06/2026
